@@ -22,7 +22,7 @@ export default function ChatInput({ onSend, disabled }: ChatInputProps) {
   // TODO-17 (Required): Create a state variable for the input text.
   //
   // Use React's useState hook:
-  //   const [input, setInput] = useState("");
+  const [input, setInput] = useState("");
 
   // TODO-18 (Required): Build the submit handler and the JSX.
   //

@@ -54,6 +54,12 @@ class ChatResponse(BaseModel):
 
 
 class HealthResponse(BaseModel):
+
+
+  status:str = "ok"
+  neo4j: str = "unknown"
+  gemini_configured: bool = False
+
     # TODO-3 (Required): Add three fields — `status`, `neo4j`, and `gemini_configured`.
     #
     # `status` — overall API health, default "ok"
@@ -68,4 +74,3 @@ class HealthResponse(BaseModel):
     # For fields with defaults you don't need Field(...), just use =
     #   Example: status: str = "ok"
     #   Or with description: status: str = Field(default="ok", description="...")
-    pass
