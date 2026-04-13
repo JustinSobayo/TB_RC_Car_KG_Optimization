@@ -16,6 +16,7 @@ What you need to implement:
 """
 
 from contextlib import asynccontextmanager
+from multiprocessing.reduction import register
 
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
@@ -68,3 +69,5 @@ app = FastAPI(
 #
 # After this, visiting http://localhost:8000/health and POSTing to
 # http://localhost:8000/chat will hit the functions in those files.
+app.include_router(chat.router)
+app.include_router(health.router)

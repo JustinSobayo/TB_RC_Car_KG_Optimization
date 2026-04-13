@@ -51,4 +51,19 @@ def get_health() -> HealthResponse:
     #            gemini_configured=...,
     #        )
 
-    return HealthResponse()
+settings = get_settings()
+try:
+    get_graph_client().verify_connectivity()
+    neo4j_status = "ok"
+except Exception:
+   neo4j_status = "error"
+if neo4j_status == "ok":
+    overall_status = "ok"
+else:
+    overall_status = "degraded"
+gemini_configured=bool(settings.gemini_api_key.strip())
+return HealthResponse(
+    status=overall_status,
+    neo4j=neo4j_status,
+    gemini_configured=gemini_configured,
+)
