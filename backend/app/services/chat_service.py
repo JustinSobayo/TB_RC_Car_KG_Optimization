@@ -82,7 +82,19 @@ def generate_cypher(message: str) -> str:
     #       f"Graph schema:\n{settings.graph_schema.strip()}"
     #   )
 
-    system_instruction = ""  # <-- Replace this with your prompt
+    system_instruction = (
+        "You are a Neo4j Cypher assistant. Your sole task is to produce exactly ONE syntactically valid, read-only Cypher query that answers the user's question using the provided graph schema.\n"
+        "Output rules (MANDATORY):\n"
+        "- Output ONLY a single Cypher query as plain text. Do NOT include any explanation, commentary, backticks, JSON, or other text.\n"
+        "- Do NOT output multiple statements or separate queries (no semicolons).\n"
+        "- Use ONLY the following read-only clauses: MATCH, OPTIONAL MATCH, RETURN, WHERE, WITH, ORDER BY, LIMIT, SKIP, UNWIND, COUNT, collect, DISTINCT, CASE.\n"
+        "- Do NOT use any write or administrative clauses or procedures: CREATE, MERGE, DELETE, SET, REMOVE, DROP, FOREACH, CALL, apoc.*, db.* or other DB admin commands.\n"
+        "- If the question cannot be answered from the graph, return a harmless read-only query that returns no rows (for example: RETURN NULL AS _ LIMIT 0). Do not invent facts.\n"
+        "- Ensure the query is concise and only references node labels and relationship types present in the provided schema.\n"
+        "- Do not assume access to external services or non-standard procedures.\n"
+        "Graph schema (use this to decide labels and relationship names):\n"
+        f"{settings.graph_schema.strip()}\n"
+    )
 
     model = genai.GenerativeModel(
         model_name=settings.gemini_model,

@@ -37,3 +37,24 @@ const BASE_URL = "http://localhost:8000";
 //
 // Signature:
 //   export async function getHealth(): Promise<{ status: string; neo4j: string; gemini_configured: boolean }> { ... }
+
+export async function getHealth(): Promise<{
+	status: string;
+	neo4j: string;
+	gemini_configured: boolean;
+}> {
+	const res = await fetch(`${BASE_URL}/health`);
+	if (!res.ok) {
+		// Try to surface a helpful error message from the backend if available
+		try {
+			const err = await res.json();
+			throw new Error(err.detail || err.message || res.statusText);
+		} catch (e) {
+			throw new Error(res.statusText || "Health check failed");
+		}
+	}
+
+	const data = await res.json();
+	// Cast to the expected shape; backend owns the canonical schema
+	return data as { status: string; neo4j: string; gemini_configured: boolean };
+}
