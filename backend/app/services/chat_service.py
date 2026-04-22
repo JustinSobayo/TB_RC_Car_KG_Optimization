@@ -82,7 +82,15 @@ def generate_cypher(message: str) -> str:
     #       f"Graph schema:\n{settings.graph_schema.strip()}"
     #   )
 
-    system_instruction = ""  # <-- Replace this with your prompt
+    system_instruction = (
+        "You are a Neo4j Cypher assistant. "
+        "Output ONLY a single Cypher query and nothing else. "
+        "Use read-only Cypher clauses only: MATCH, OPTIONAL MATCH, RETURN, WHERE, WITH, "
+        "ORDER BY, LIMIT, SKIP, UNWIND, COUNT, collect, DISTINCT, CASE. "
+        "Do NOT use write clauses: CREATE, MERGE, DELETE, SET, REMOVE, DROP, FOREACH, DETACH. "
+        "Prefer concise, schema-aligned queries.\n\n"
+        f"Graph schema:\n{settings.graph_schema.strip()}"
+    )
 
     model = genai.GenerativeModel(
         model_name=settings.gemini_model,
@@ -106,7 +114,23 @@ def generate_cypher(message: str) -> str:
     #   response = model.generate_content(message, generation_config=...)
     #   content = response.text  # may throw ValueError if blocked
 
-    raise NotImplementedError("TODO-11: Call Gemini and return the extracted Cypher query.")
+    response = model.generate_content(
+        message,
+        generation_config=genai.GenerationConfig(temperature=0.1),
+    )
+
+    try:
+        content = response.text
+    except ValueError as exc:
+        raise ValueError(
+            "Gemini did not return text output (the response may have been blocked by safety "
+            "filters). Please rephrase your question and try again."
+        ) from exc
+
+    if not content or not content.strip():
+        raise ValueError("Gemini returned an empty response.")
+
+    return extract_cypher(content)
 
 
 def run_chat(message: str) -> ChatResponse:

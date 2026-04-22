@@ -13,6 +13,8 @@ What you need to implement:
     a HealthResponse with the results.
 """
 
+from ast import Try
+
 from fastapi import APIRouter
 
 from app.core.config import get_settings
@@ -28,28 +30,36 @@ def get_health() -> HealthResponse:
     #
     # Steps:
     #   1. Load settings:
-    #        settings = get_settings()
+    settings = get_settings()
     #
     #   2. Try to verify Neo4j is reachable:
-    #        - Call get_graph_client().verify_connectivity()
-    #        - If it succeeds → neo4j_status = "ok"
+    # - If it succeeds → neo4j_status = "ok"
     #        - If it raises any Exception → neo4j_status = "error"
     #        Use a try/except block for this.
-    #
+    try:
+      get_graph_client().verify_connectivity()
+      neo4j_status = "ok"
+
+    except:
+      neo4j_status = "error"
+    
     #   3. Determine the overall status:
     #        - "ok" if neo4j_status is "ok"
     #        - "degraded" otherwise
-    #
+    if neo4j_status == "ok":
+      status = "ok"
+    else:
+      status = "degraded"
     #   4. Check if Gemini is configured:
     #        bool(settings.gemini_api_key.strip())
     #        This returns True if the key is set, False if empty.
-    #
+    gemini_configured = bool(settings.gemini_api_key.strip())
     #   5. Return a HealthResponse with all three values:
-    #        return HealthResponse(
-    #            status=...,
-    #            neo4j=...,
-    #            gemini_configured=...,
-    #        )
+    return HealthResponse(
+      status=...,
+      neo4j=...,
+      gemini_configured=...,
+    )
 
 settings = get_settings()
 try:

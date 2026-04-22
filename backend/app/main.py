@@ -38,8 +38,17 @@ app = FastAPI(
 )
 
 
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
+
 # TODO-4 (Required): Add CORS middleware.
 #
+
 # The React frontend runs on http://localhost:5173 but the API runs on
 # http://localhost:8000. Browsers block cross-origin requests by default.
 # CORS middleware tells the browser "it's okay, let the frontend talk to me."
