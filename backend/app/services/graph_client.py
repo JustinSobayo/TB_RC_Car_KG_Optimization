@@ -43,30 +43,15 @@ class _GraphClient:
         _driver.verify_connectivity()
 
     def run_query(self, query: str, parameters: dict | None = None) -> list[dict]:
-        # TODO-8 (Required): Execute the Cypher query and return results as a list of dicts.
-        #
-        # The Neo4j Python driver works like this:
-        #   1. Open a session:       with _driver.session() as session:
-        #   2. Run the query:            result = session.run(query, parameters)
-        #   3. Iterate over records:     for record in result:
-        #   4. Convert each to a dict:       record.data()  → {"name": "Lap 1", ...}
-        #   5. Collect into a list and return it.
-        #
-        # Don't forget:
-        #   - `parameters` might be None — default it to {} if so.
-        #   - `_driver` is the module-level singleton (already set by __init__).
-        #
-        # Skeleton:
-        #   assert _driver is not None
-        #   parameters = parameters or {}
-        #   rows: list[dict] = []
-        #   with _driver.session() as session:
-        #       result = session.run(query, parameters)
-        #       for record in result:
-        #           rows.append(record.data())
-        #   return rows
+        assert _driver is not None
+        parameters = parameters or {}
 
-        raise NotImplementedError("TODO-8: Execute the Cypher query and return the results.")
+        rows: list[dict] = []
+        with _driver.session() as session:
+            result = session.run(query, parameters)
+            for record in result:
+                rows.append(record.data())
+        return rows
 
 
 def close_graph_driver() -> None:

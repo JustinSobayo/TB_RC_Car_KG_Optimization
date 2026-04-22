@@ -118,7 +118,23 @@ def generate_cypher(message: str) -> str:
     #   response = model.generate_content(message, generation_config=...)
     #   content = response.text  # may throw ValueError if blocked
 
-    raise NotImplementedError("TODO-11: Call Gemini and return the extracted Cypher query.")
+    response = model.generate_content(
+        message,
+        generation_config=genai.GenerationConfig(temperature=0.1),
+    )
+
+    try:
+        content = response.text
+    except ValueError as exc:
+        raise ValueError(
+            "Gemini did not return text output (the response may have been blocked by safety "
+            "filters). Please rephrase your question and try again."
+        ) from exc
+
+    if not content or not content.strip():
+        raise ValueError("Gemini returned an empty response.")
+
+    return extract_cypher(content)
 
 
 def run_chat(message: str) -> ChatResponse:

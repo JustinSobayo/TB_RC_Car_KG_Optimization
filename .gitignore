@@ -4,7 +4,6 @@
 # - Keep local env files (like `.env`) out of version control.
 
 .env
-.env.*
 
 # Python
 __pycache__/

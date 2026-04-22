@@ -28,6 +28,31 @@ const BASE_URL = "http://localhost:8000";
 //
 // Signature:
 //   export async function sendChat(message: string): Promise<ChatResponse> { ... }
+export async function sendChat(message: string): Promise<ChatResponse> {
+    try {
+        const response = await fetch(`${BASE_URL}/chat`, {
+            method: "POST",
+            headers: {
+                "Content-Type" : "application/json",
+            },
+            body: JSON.stringify({ message }),
+        });
+        if (!response.ok) {
+            let errorText: string;
+            try {
+                const errorData = await response.json();
+                errorText = errorData.detail || response.statusText;
+            } catch {
+                errorText = response.statusText;
+            }
+            throw new Error(`Chat request failed: ${errorText}`);
+        }
+        const data: ChatResponse = await response.json();
+        return data;
+    } catch (err) {
+        throw new Error(`sendChat error: ${(err as Error).message}`);
+    }
+}
 
 // TODO-14 (Optional): Implement getHealth().
 //

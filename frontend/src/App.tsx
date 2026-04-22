@@ -21,6 +21,14 @@
 //
 //   Optional: wrap it in a container div with a title/header if you want.
 
+import ChatLayout from "./components/ChatLayout";
+
+
 export default function App() {
-  return <div>Replace me with ChatLayout</div>;
+ return (
+   <div>
+     <h1>Chat App</h1>
+     <ChatLayout />
+   </div>
+ );
 }

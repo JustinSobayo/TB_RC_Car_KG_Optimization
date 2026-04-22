@@ -22,40 +22,26 @@ from pydantic import BaseModel, Field
 
 class ChatRequest(BaseModel):
     # TODO-1 (Required): Add a field called `message`.
-    #
-    # This is the user's question (e.g. "How many sessions are in the graph?").
-    # It should be:
-    #   - type: str
-    #   - required (use ... as the default in Field)
-    #   - minimum length of 1 (so empty strings are rejected)
-    #
-    # Syntax:
-    #   field_name: type = Field(default, min_length=..., description="...")
-    #
-    # Example of a required string field with min length:
-    #   name: str = Field(..., min_length=1, description="The person's name")
-    pass
-
+    message: str = Field(default=..., min_length=1, description="The user's question")
 
 class ChatResponse(BaseModel):
     # TODO-2 (Required): Add two fields — `answer` and `cypher`.
-    #
-    # `answer` — the human-readable response shown in the chat UI.
-    #   - type: str
-    #   - required
-    #
-    # `cypher` — the generated Cypher query (shown for debugging/teaching).
-    #   - type: str or None  (written as: str | None)
-    #   - optional, default to None
-    #
-    # Example of an optional nullable field:
-    #   debug_info: str | None = Field(default=None, description="Extra info")
+answer: str = Field(description="The human-readable response shown in the chat UI.")
+cypher: str | None = Field(default=None, description="The generated Cypher query (shown for debugging/teaching).")
     pass
 
 
 class HealthResponse(BaseModel):
+
+
+  status:str = "ok"
+  neo4j: str = "unknown"
+  gemini_configured: bool = False
+
     # TODO-3 (Required): Add three fields — `status`, `neo4j`, and `gemini_configured`.
-    #
+    status: str = Field(default="ok", description="Overall API health status")
+    neo4j: str = Field(default="unknown", description="Connection state of the graph database")
+    gemini_configured: bool = Field(default=False, description="Whether the LLM API key is set")
     # `status` — overall API health, default "ok"
     #   - type: str, default: "ok"
     #
@@ -68,4 +54,3 @@ class HealthResponse(BaseModel):
     # For fields with defaults you don't need Field(...), just use =
     #   Example: status: str = "ok"
     #   Or with description: status: str = Field(default="ok", description="...")
-    pass
